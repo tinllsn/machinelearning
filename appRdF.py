@@ -14,7 +14,7 @@ st.title("📈 Random Forest Stock Market Prediction")
 @st.cache_data
 def load_sp500():
     sp500 = yf.Ticker("^GSPC")
-    df = sp500.history(start="2022-01-01")
+    df = sp500.history(period="max")
     return df
 
 st.text('Loading data...')
