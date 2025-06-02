@@ -179,14 +179,14 @@ plt.legend()
 plt.title("Target_Tomorrow vs Prediction")
 st.pyplot(fig)
 #backtest
-st.subheader("📈 Backtest Strategy: Predict Tomorrow's Price Direction")
-cum_return, bh_return = backtest_target_strategy(test, preds)
-fig_bt1, ax_bt1 = plt.subplots(figsize=(10,5))
-ax_bt1.plot(cum_return.index, cum_return, label="Strategy Return")
-ax_bt1.plot(bh_return.index, bh_return, label="Buy & Hold")
-ax_bt1.set_title("Backtest: Target Strategy vs Buy & Hold")
-ax_bt1.legend()
-st.pyplot(fig_bt1)
+# st.subheader("📈 Backtest Strategy: Predict Tomorrow's Price Direction")
+# cum_return, bh_return = backtest_target_strategy(test, preds)
+# fig_bt1, ax_bt1 = plt.subplots(figsize=(10,5))
+# ax_bt1.plot(cum_return.index, cum_return, label="Strategy Return")
+# ax_bt1.plot(bh_return.index, bh_return, label="Buy & Hold")
+# ax_bt1.set_title("Backtest: Target Strategy vs Buy & Hold")
+# ax_bt1.legend()
+# st.pyplot(fig_bt1)
 
 
 # display compare 2 target: MA
@@ -236,15 +236,15 @@ plt.legend()
 plt.title("TargetMA vs Prediction")
 st.pyplot(fig)
 
-#backtest
-st.subheader("📈 Backtest Strategy: Predict MA10 > MA50 Trend")
-cum_return_ma, bh_return_ma = backtest_ma_strategy(test, preds_ma)
-fig_bt2, ax_bt2 = plt.subplots(figsize=(10,5))
-ax_bt2.plot(cum_return_ma.index, cum_return_ma, label="Strategy Return")
-ax_bt2.plot(bh_return_ma.index, bh_return_ma, label="Buy & Hold")
-ax_bt2.set_title("Backtest: MA Strategy vs Buy & Hold")
-ax_bt2.legend()
-st.pyplot(fig_bt2)
+# #backtest
+# st.subheader("📈 Backtest Strategy: Predict MA10 > MA50 Trend")
+# cum_return_ma, bh_return_ma = backtest_ma_strategy(test, preds_ma)
+# fig_bt2, ax_bt2 = plt.subplots(figsize=(10,5))
+# ax_bt2.plot(cum_return_ma.index, cum_return_ma, label="Strategy Return")
+# ax_bt2.plot(bh_return_ma.index, bh_return_ma, label="Buy & Hold")
+# ax_bt2.set_title("Backtest: MA Strategy vs Buy & Hold")
+# ax_bt2.legend()
+# st.pyplot(fig_bt2)
 
 
 # 3. Plot price with MA10 and MA50 (Plotly)
@@ -281,19 +281,19 @@ st.pyplot(fig_bt2)
 
 #ss
 
-st.subheader("📊 Backtest Comparison: All Strategies")
+# st.subheader("📊 Backtest Comparison: All Strategies")
 
-fig_compare, ax_compare = plt.subplots(figsize=(12, 6))
-ax_compare.plot(cum_return.index, cum_return, label="Target Strategy (Next Day Up)")
-ax_compare.plot(cum_return_ma.index, cum_return_ma, label="TargetMA Strategy (MA10 > MA50)")
-ax_compare.plot(bh_return.index, bh_return, label="Buy & Hold Strategy")
+# fig_compare, ax_compare = plt.subplots(figsize=(12, 6))
+# ax_compare.plot(cum_return.index, cum_return, label="Target Strategy (Next Day Up)")
+# ax_compare.plot(cum_return_ma.index, cum_return_ma, label="TargetMA Strategy (MA10 > MA50)")
+# ax_compare.plot(bh_return.index, bh_return, label="Buy & Hold Strategy")
 
-ax_compare.set_title("Backtest Comparison: Target vs MA vs Buy & Hold")
-ax_compare.set_xlabel("Date")
-ax_compare.set_ylabel("Cumulative Return")
-ax_compare.grid(True)
-ax_compare.legend()
-st.pyplot(fig_compare)
+# ax_compare.set_title("Backtest Comparison: Target vs MA vs Buy & Hold")
+# ax_compare.set_xlabel("Date")
+# ax_compare.set_ylabel("Cumulative Return")
+# ax_compare.grid(True)
+# ax_compare.legend()
+# st.pyplot(fig_compare)
 
 
 
