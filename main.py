@@ -4,6 +4,7 @@ import numpy as np
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import SGDRegressor
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 import matplotlib.pyplot as plt
@@ -56,14 +57,6 @@ def analyze_initial_data(hist):
         ax.grid(True)
         st.pyplot(fig)
 
-    # # 2.2. Boxplot để phát hiện ngoại lai
-    # for feature in features:
-    #     fig, ax = plt.subplots(figsize=(8, 5))
-    #     sns.boxplot(x=X_train[feature], ax=ax, color="lightblue")
-    #     ax.set_title(f"Boxplot của {feature}")
-    #     ax.grid(True)
-    #     st.pyplot(fig)
-
     # 2.3. Scatter plot với Tomorrow_Close
     for feature in features:
         fig, ax = plt.subplots(figsize=(8, 5))
@@ -94,22 +87,21 @@ def analyze_initial_data(hist):
     st.write("Đã xong phân tích dữ liệu")
 
 # Hàm Linear Regression với PCA
-
 def train_linear_regression(X_train, y_train, X_test, y_test, features):
     # Hiển thị dữ liệu trước khi chuẩn hóa (5 dòng đầu tiên)
     st.write("Dữ liệu trước khi chuẩn hóa (5 dòng đầu tiên):")
     st.write(pd.DataFrame(X_train, columns=features).head())
 
     # Step 1: Standardization
-    st.write("### Bước 1: Chuẩn hóa dữ liệu")
+    st.write("### Chuẩn hóa dữ liệu")
     st.write("Mục tiêu: Chuẩn hóa dữ liệu để các đặc trưng đóng góp đồng đều vào phân tích.")
     st.write("Công thức chuẩn hóa:")
     st.latex(r"Z = \frac{X - \mu}{\sigma}")
-    st.write("Trong đó:")
-    st.write("- \(Z\): Giá trị đã chuẩn hóa")
-    st.write("- \(X\): Giá trị ban đầu")
-    st.write("- \(\mu\): Trung bình của đặc trưng")
-    st.write("- \(\sigma\): Độ lệch chuẩn của đặc trưng")
+    # st.write("Trong đó:")
+    # st.write("- \(Z\): Giá trị đã chuẩn hóa")
+    # st.write("- \(X\): Giá trị ban đầu")
+    # st.write("- \(\mu\): Trung bình của đặc trưng")
+    # st.write("- \(\sigma\): Độ lệch chuẩn của đặc trưng")
 
     scaler = StandardScaler()
     X_train_scaled = scaler.fit_transform(X_train)
@@ -120,21 +112,21 @@ def train_linear_regression(X_train, y_train, X_test, y_test, features):
     st.write(pd.DataFrame(X_train_scaled, columns=features).head())
 
     # Step 2: Covariance Matrix Computation
-    st.write("### Bước 2: Tính ma trận hiệp phương sai")
-    st.write("Mục tiêu: Hiểu mối quan hệ giữa các đặc trưng bằng cách tính ma trận hiệp phương sai.")
+    # st.write("### Bước 2: Tính ma trận hiệp phương sai")
+    # st.write("Mục tiêu: Hiểu mối quan hệ giữa các đặc trưng bằng cách tính ma trận hiệp phương sai.")
     cov_matrix = np.cov(X_train_scaled.T)
     cov_matrix_df = pd.DataFrame(cov_matrix, index=features, columns=features)
-    st.write("Ma trận hiệp phương sai:")
-    st.write(cov_matrix_df)
+    # st.write("Ma trận hiệp phương sai:")
+    # st.write(cov_matrix_df)
 
     # Hiển thị heatmap của ma trận hiệp phương sai
-    fig, ax = plt.subplots(figsize=(8, 6))
-    sns.heatmap(cov_matrix_df, annot=True, cmap="coolwarm", vmin=-1, vmax=1, ax=ax)
-    ax.set_title("Heatmap của Ma trận Hiệp phương sai")
-    st.pyplot(fig)
+    # fig, ax = plt.subplots(figsize=(8, 6))
+    # sns.heatmap(cov_matrix_df, annot=True, cmap="coolwarm", vmin=-1, vmax=1, ax=ax)
+    # ax.set_title("Heatmap của Ma trận Hiệp phương sai")
+    # st.pyplot(fig)
 
     # Step 3: Compute Eigenvectors and Eigenvalues
-    st.write("### Bước 3: Tính Eigenvectors và Eigenvalues")
+    st.write("### Eigenvectors và Eigenvalues")
     st.write("Mục tiêu: Xác định các thành phần chính bằng cách tính eigenvectors và eigenvalues của ma trận hiệp phương sai.")
     eigenvalues, eigenvectors = np.linalg.eigh(cov_matrix)
     
@@ -143,11 +135,11 @@ def train_linear_regression(X_train, y_train, X_test, y_test, features):
     eigenvalues = eigenvalues[idx]
     eigenvectors = eigenvectors[:, idx]
 
-    st.write("Eigenvalues (giá trị riêng):")
-    st.write(eigenvalues)
-    st.write("Eigenvectors (vector riêng):")
-    eigenvectors_df = pd.DataFrame(eigenvectors, index=features, columns=[f"PC{i+1}" for i in range(len(features))])
-    st.write(eigenvectors_df)
+    # st.write("Eigenvalues (giá trị riêng):")
+    # st.write(eigenvalues)
+    # st.write("Eigenvectors (vector riêng):")
+    # eigenvectors_df = pd.DataFrame(eigenvectors, index=features, columns=[f"PC{i+1}" for i in range(len(features))])
+    # st.write(eigenvectors_df)
 
     # Biểu đồ phần trăm phương sai được giải thích bởi từng thành phần chính
     st.write("### Phần trăm phương sai được giải thích bởi từng thành phần chính")
@@ -172,25 +164,25 @@ def train_linear_regression(X_train, y_train, X_test, y_test, features):
     st.pyplot(fig)
 
     # Step 4: Feature Vector
-    st.write("### Bước 4: Tạo Feature Vector")
-    st.write("Mục tiêu: Chọn các thành phần chính dựa trên eigenvalues và tạo feature vector.")
+    # st.write("### Bước 4: Tạo Feature Vector")
+    # st.write("Mục tiêu: Chọn các thành phần chính dựa trên eigenvalues và tạo feature vector.")
     # Chọn số thành phần chính để giải thích ít nhất 95% phương sai
     cumulative_variance = np.cumsum(explained_variance_ratio)
     n_components = np.argmax(cumulative_variance >= 95) + 1
-    st.write(f"Số thành phần chính được chọn để giải thích ít nhất 95% phương sai: {n_components}")
+    # st.write(f"Số thành phần chính được chọn để giải thích ít nhất 95% phương sai: {n_components}")
 
     feature_vector = eigenvectors[:, :n_components]
-    st.write("Feature vector (các eigenvector được chọn):")
+    # st.write("Feature vector (các eigenvector được chọn):")
     feature_vector_df = pd.DataFrame(feature_vector, index=features, columns=[pc_names[i] for i in range(n_components)])
-    st.write(feature_vector_df)
+    # st.write(feature_vector_df)
 
     # Last Step: Recast the Data Along the Principal Components Axes
-    st.write("### Bước cuối: Chiếu dữ liệu lên không gian các thành phần chính")
+    st.write("### Dữ liệu sau khi thực hiện pca")
     st.write("Công thức tính tập dữ liệu sau PCA:")
     st.latex(r"\text{PCA Data} = X_{\text{scaled}} \times \text{Feature Vector}")
-    st.write("Trong đó:")
-    st.write("- \(X_{\text{scaled}}\): Dữ liệu đã chuẩn hóa")
-    st.write("- \(\text{Feature Vector}\): Ma trận các eigenvector được chọn")
+    # st.write("Trong đó:")
+    # st.write("- \(X_{\text{scaled}}\): Dữ liệu đã chuẩn hóa")
+    # st.write("- \(\text{Feature Vector}\): Ma trận các eigenvector được chọn")
 
     X_train_pca = X_train_scaled @ feature_vector
     X_test_pca = X_test_scaled @ feature_vector
@@ -236,22 +228,102 @@ def train_linear_regression(X_train, y_train, X_test, y_test, features):
     lr_model.fit(X_train_pca, y_train)
     lr_predictions = lr_model.predict(X_test_pca)
 
-    return lr_model, lr_predictions, scaler, feature_vector  # Trả về feature_vector thay vì None# Hàm Random Forest Regression
+    st.write("### Linear Regression Model Parameters")
+    st.write("**Intercept (b0):**", lr_model.intercept_)
+    st.write("**Coefficients (b1, b2, ..., bn):**", lr_model.coef_)
+
+    # Hiển thị dưới dạng phương trình
+    equation = f"y = {lr_model.intercept_:.2f}"
+    for i, coef in enumerate(lr_model.coef_):
+        equation += f" + ({coef:.2f} × PC{i+1})"
+    st.write("### Estimated Equation:")
+    st.latex(equation.replace("×", "\\times"))
+
+    return lr_model, lr_predictions, scaler, feature_vector
+
+# Hàm SGD Regression với PCA
+def train_sgd_regression(X_train, y_train, X_test, y_test, features):
+    scaler = StandardScaler()
+    X_train_scaled = scaler.fit_transform(X_train)
+    X_test_scaled = scaler.transform(X_test)
+
+    cov_matrix = np.cov(X_train_scaled.T)
+    eigenvalues, eigenvectors = np.linalg.eigh(cov_matrix)
+    idx = eigenvalues.argsort()[::-1]
+    eigenvalues = eigenvalues[idx]
+    eigenvectors = eigenvectors[:, idx]
+
+    explained_variance_ratio = eigenvalues / eigenvalues.sum() * 100
+    cumulative_variance = np.cumsum(explained_variance_ratio)
+    n_components = np.argmax(cumulative_variance >= 95) + 1
+
+    feature_vector = eigenvectors[:, :n_components]
+
+    X_train_pca = X_train_scaled @ feature_vector
+    X_test_pca = X_test_scaled @ feature_vector
+
+    columns = [f"PC{i+1}" for i in range(n_components)]
+    X_train_pca_df = pd.DataFrame(X_train_pca, columns=columns)
+    X_train_pca_df["Tomorrow_Close"] = y_train.values
+
+    st.write("Dữ liệu sau PCA (5 dòng đầu tiên):")
+    st.write(X_train_pca_df.head())
+
+    sgd_model = SGDRegressor(max_iter=1000, tol=1e-3, random_state=42)
+    sgd_model.fit(X_train_pca, y_train)
+    sgd_predictions = sgd_model.predict(X_test_pca)
+    
+    st.write("### SGDRegressor Model Parameters")
+    st.write("**Intercept (b0):**", sgd_model.intercept_[0])
+    st.write("**Coefficients (b1, b2, ..., bn):**", sgd_model.coef_)
+
+    # Hiển thị dưới dạng phương trình
+    # Hiển thị dưới dạng phương trình
+    equation = f"y = {sgd_model.intercept_[0]:.2f}"  # Use intercept_[0] to get the scalar value
+    for i, coef in enumerate(sgd_model.coef_):
+        equation += f" + ({coef:.2f} × PC{i+1})"
+    st.write("### Estimated Equation:")
+    st.latex(equation.replace("×", "\\times"))
+
+    return sgd_model, sgd_predictions, scaler, feature_vector
+
+# Hàm Random Forest Regression
+# Hàm Random Forest Regression
 def train_random_forest(X_train, y_train, X_test, y_test):
+    # Hiển thị dữ liệu đầu vào
+    st.write("### Dữ liệu đầu vào của Random Forest ")
+    st.write("**Dữ liệu huấn luyện (X_train) - 5 dòng đầu tiên:**")
+    st.write(X_train.head())
+    st.write("**Biến mục tiêu (y_train) - 5 dòng đầu tiên:**")
+    st.write(y_train.head())
+
+    # Huấn luyện mô hình
     model = RandomForestRegressor(n_estimators=100, random_state=42)
     model.fit(X_train, y_train)
     predictions = model.predict(X_test)
-    rmse = np.sqrt(mean_squared_error(y_test, predictions))
-    mae = mean_absolute_error(y_test, predictions)
-    st.write(f"✅ RMSE: {rmse:.2f}")
-    st.write(f"✅ MAE: {mae:.2f}")
-    return model, predictions
 
+
+    # Biểu đồ 2: Actual vs Predicted
+    st.write("### Biểu đồ: Giá trị thực tế vs Dự đoán (Actual vs Predicted)")
+    fig, ax = plt.subplots(figsize=(10, 6))
+    ax.plot(y_test.values, label="Actual Tomorrow_Close ", color="blue", alpha=0.7)
+    ax.plot(predictions, label="Predicted Tomorrow_Close ", color="orange", alpha=0.7)
+    ax.set_title("Actual vs Predicted Tomorrow_Close ")
+    ax.set_xlabel("Test Samples")
+    ax.set_ylabel("Tomorrow_Close (USD)")
+    ax.legend()
+    ax.grid(True)
+    st.pyplot(fig)
+    return model, predictions
 # Hàm so sánh hiệu suất
-def compare_models(lr_predictions, rf_predictions, y_test):
+def compare_models(lr_predictions, sgd_predictions, rf_predictions, y_test):
     lr_mse = mean_squared_error(y_test, lr_predictions)
     lr_mae = mean_absolute_error(y_test, lr_predictions)
     lr_r2 = r2_score(y_test, lr_predictions)
+
+    sgd_mse = mean_squared_error(y_test, sgd_predictions)
+    sgd_mae = mean_absolute_error(y_test, sgd_predictions)
+    sgd_r2 = r2_score(y_test, sgd_predictions)
 
     rf_mse = mean_squared_error(y_test, rf_predictions)
     rf_mae = mean_absolute_error(y_test, rf_predictions)
@@ -262,19 +334,30 @@ def compare_models(lr_predictions, rf_predictions, y_test):
     st.write(f"MAE: {lr_mae:.2f}")
     st.write(f"R2 Score: {lr_r2:.2f}")
 
+    st.write("### SGDRegressor Metrics:")
+    st.write(f"MSE: {sgd_mse:.2f}")
+    st.write(f"MAE: {sgd_mae:.2f}")
+    st.write(f"R2 Score: {sgd_r2:.2f}")
+
     st.write("### Random Forest Metrics:")
     st.write(f"MSE: {rf_mse:.2f}")
     st.write(f"MAE: {rf_mae:.2f}")
     st.write(f"R2 Score: {rf_r2:.2f}")
 
-    if lr_r2 > rf_r2:
-        st.write("\nLinear Regression có hiệu suất tốt hơn (dựa trên R2 Score).")
-    else:
-        st.write("\nRandom Forest có hiệu suất tốt hơn (dựa trên R2 Score).")
+    # So sánh R2 Score để tìm mô hình tốt nhất
+    r2_scores = {
+        "Linear Regression": lr_r2,
+        "SGDRegressor": sgd_r2,
+        "Random Forest": rf_r2
+    }
+    best_model = max(r2_scores, key=r2_scores.get)
+    # st.write(f"\nMô hình có hiệu suất tốt nhất (dựa trên R2 Score) là: **{best_model}** với R2 = {r2_scores[best_model]:.2f}")
 
+    # Vẽ biểu đồ so sánh
     fig, ax = plt.subplots(figsize=(10, 6))
     ax.plot(y_test.values, label="Actual Tomorrow_Close", color="blue")
     ax.plot(lr_predictions, label="Linear Regression Predictions", color="orange")
+    ax.plot(sgd_predictions, label="SGDRegressor Predictions", color="red")
     ax.plot(rf_predictions, label="Random Forest Predictions", color="green")
     ax.set_title("Actual vs Predicted Values")
     ax.set_xlabel("Test Samples")
@@ -283,37 +366,49 @@ def compare_models(lr_predictions, rf_predictions, y_test):
     st.pyplot(fig)
 
 # Hàm dự đoán cho 3 dòng cuối
-# Hàm dự đoán cho 3 dòng cuối
-def predict_latest_data(latest_features, lr_model, rf_model, scaler, feature_vector):
+def predict_latest_data(latest_features, lr_model, sgd_model, rf_model, scaler, feature_vector):
     latest_data_scaled = scaler.transform(latest_features)
     latest_data_pca = latest_data_scaled @ feature_vector
-    lr_latest_predictions = lr_model.predict(latest_data_pca)
 
+    # Dự đoán với Linear Regression
+    lr_latest_predictions = lr_model.predict(latest_data_pca)
     st.write("### Dự đoán với Linear Regression cho 3 dòng cuối:")
     for i, pred in enumerate(lr_latest_predictions):
         st.write(f"Dòng {i+1}: {pred:.2f}")
 
+    # Dự đoán với SGDRegressor
+    sgd_latest_predictions = sgd_model.predict(latest_data_pca)
+    st.write("\n### Dự đoán với SGDRegressor cho 3 dòng cuối:")
+    for i, pred in enumerate(sgd_latest_predictions):
+        st.write(f"Dòng {i+1}: {pred:.2f}")
+
+    # Dự đoán với Random Forest
     rf_latest_predictions = rf_model.predict(latest_features)
     st.write("\n### Dự đoán với Random Forest cho 3 dòng cuối:")
     for i, pred in enumerate(rf_latest_predictions):
         st.write(f"Dòng {i+1}: {pred:.2f}")
 
 # Hàm dự đoán cho dữ liệu giả định
-# Hàm dự đoán cho dữ liệu giả định
-def predict_user_input(user_input, lr_model, rf_model, scaler, feature_vector):
+def predict_user_input(user_input, lr_model, sgd_model, rf_model, scaler, feature_vector):
     user_df = pd.DataFrame([user_input])
     user_scaled = scaler.transform(user_df)
     user_pca = user_scaled @ feature_vector
+
+    # Dự đoán với Linear Regression
     lr_prediction = lr_model.predict(user_pca)[0]
-
-    rf_prediction = rf_model.predict(user_df)[0]
-
     st.write("### Dự đoán với Linear Regression cho dữ liệu giả định:", lr_prediction)
+
+    # Dự đoán với SGDRegressor
+    sgd_prediction = sgd_model.predict(user_pca)[0]
+    st.write("### Dự đoán với SGDRegressor cho dữ liệu giả định:", sgd_prediction)
+
+    # Dự đoán với Random Forest
+    rf_prediction = rf_model.predict(user_df)[0]
     st.write("### Dự đoán với Random Forest cho dữ liệu giả định:", rf_prediction)
 
 # Main Streamlit app
 def main():
-    st.title("Phân tích và Dự đoán Giá Cổ phiếu với Linear Regression và Random Forest")
+    st.title("Phân tích và Dự đoán Giá Cổ phiếu với Linear Regression, SGDRegressor và Random Forest")
 
     # Tải và phân tích dữ liệu
     hist, latest_features = load_and_prepare_data()
@@ -327,18 +422,20 @@ def main():
 
     analyze_initial_data(hist)
     
-    st.write("### Linear Regression ")
+    st.write("### Linear Regression")
+    lr_model, lr_predictions, scaler, feature_vector = train_linear_regression(X_train, y_train, X_test, y_test, features)
 
-    # Huấn luyện và dự đoán
-    lr_model, lr_predictions, scaler, pca = train_linear_regression(X_train, y_train, X_test, y_test, features)
+    st.write("### SGDRegressor")
+    sgd_model, sgd_predictions, _, _ = train_sgd_regression(X_train, y_train, X_test, y_test, features)
+
     st.write("### Random Forest Regression")
     rf_model, rf_predictions = train_random_forest(X_train, y_train, X_test, y_test)
 
     # So sánh hiệu suất
-    compare_models(lr_predictions, rf_predictions, y_test)
+    compare_models(lr_predictions, sgd_predictions, rf_predictions, y_test)
 
     # Dự đoán 3 dòng cuối
-    predict_latest_data(latest_features, lr_model, rf_model, scaler, pca)
+    predict_latest_data(latest_features, lr_model, sgd_model, rf_model, scaler, feature_vector)
 
     # Thêm phần nhập dữ liệu từ người dùng
     st.write("### Nhập dữ liệu để dự đoán")
@@ -358,7 +455,7 @@ def main():
             "Close": close_value,
             "Volume": volume_value
         }
-        predict_user_input(user_input, lr_model, rf_model, scaler, pca)
+        predict_user_input(user_input, lr_model, sgd_model, rf_model, scaler, feature_vector)
 
 if __name__ == "__main__":
     main()
